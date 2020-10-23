@@ -1,0 +1,26 @@
+ref概念
+1.ref在模板中用内联函数作为属性值传递的时候，在render渲染时会触发二次更新
+2.class中创建ref的方式，React.createRef(),通过current拿到当前组件实例
+3.函数式组件通过React.forwardRef((props, ref)=>{})进行转发
+4.hoc需要用useRef定义
+
+组件复合
+与vue相似通过传入对象来实现具名插槽或不具名插槽，或者通过porps传递显示
+
+hook（类似于class的函数组件，代码抽离易于复用，便于理解）
+1.useState定义state。
+2.useEffect副作用，用于请求，类型与didMount和didUpdate。第一个参数为回调执行函数，第二个参数为执行依赖项（为数组，空就为didMount），可以返回一个回调函数用来清空定时器类似willUnmount。
+使用规则以及自定义hook
+1.在函数最外层调用hook，不能再条件、循环、嵌套函数中调用
+2.只能在react函数组件中掉用
+API——useMemo和useCallback
+useMemo 把’创建’函数（一个类似计算属性的方法）和依赖项数组作为参数传入useMemo，它仅会在某个依赖项改变时候重新计算
+useCallback 把内联回调函数依赖项数组作为参数传入useCallback，它仅会在某个依赖项改变时候重新计算，当NIIT吧回调函数传递给你进过优化的子组件避免非必要的渲染有用
+
+portal传送门——全局弹窗
+
+context
+1.创建通过createContext
+1.class组件用static方式contextType去获取provide里value的值
+2.函数组件用consumer
+3.context传递value的时候不要直接写对象，会导致重复渲染
