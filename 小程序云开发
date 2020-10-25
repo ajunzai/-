@@ -15,3 +15,6 @@ wx.cloud.callFunction({
 连接数据库 
 const db = wx.cloud.database()
 db.collection (数据库名称).add
+
+1 可实验案例
+  用wx的扫码功能 scanCode,然后请求豆瓣图书的isbn码 正则匹配webpack.__data__，再用doubanbook去解码 拿到数据
