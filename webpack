@@ -1,0 +1,103 @@
+Webpack
+
+1. entry 入口
+
+2. output 输出
+
+3. mode 构建环境
+
+4. loader 模块解析
+        babel/core
+        babel/preset-env  转换规则
+        babel/polyfill es新特性  useBuiltIns：”usage” 按需注入
+        babel/plugin-transform-runtime 用于开发组件库因为polyfill会全局污染
+
+5. moudle 模块配置
+        文件和静态资源 file-loader
+        url-loader 为file-loader加强版
+
+6. plugins 插件
+        HtmlWebpackPlugin
+        clean-webpack-plugin
+        mini-css-extract-plugin css提取为独立的文件
+        optimize-css-assets-webpack-plugin css压缩
+        webpack-dev-server 
+        webpack.HotModuleReplacementPlugin  HMR 热模块
+        webpack-bundle-analyzer:分析webpack打包后的模块依赖关系
+        speed-measure-webpack-plugin:可以测量各个插件和 loader 所花费的时间
+        happypack多线程打包
+
+7. devtools 打包映射关系
+        cheap-module-eval-source-map 开发环境
+        cheap-module-source-map 线上
+
+8. devServer 本地启动
+
+9. proxy 代理服务器
+        本地mock服务的时候 指定target
+
+10. resolve  优化
+        .modules 优化配置第三方模块
+        .alias 配置别名
+        .extensions 文件后缀
+
+11. externals 优化静态资源
+
+12. tree Shaking  摇树
+     生产模式不需要配置，默认开启
+     只支持es module引入方式。 
+     optiimization: {
+        usedExports: true // 哪些模块被使用了，再做打包
+    }
+    副作用
+    package.json 
+        ”sideEffects“：false // 正常对所有模块进行tree shaking
+        或者
+        ”sideEffects“：[‘*.css, @babel/polyfill’] // 排查不需要treeshaking的地方
+
+
+13. code Splitting 代码分割
+        optimization：{
+            splitChunks: { 
+                chunks: ‘async’,
+                cacheGroups ：{}// 缓存组
+           }
+        }
+
+14. Dllplugin 动态链接库  第三方不会更新的库做缓存
+        DllPlugin:⽤于打包出⼀个个单独的动态链接库⽂件             
+        DllReferencePlugin：⽤于在主要的配置⽂件中引⼊DllPlugin插件打包好的动态链接库⽂件
+
+
+.babelrc 配置文件
+    presets和plugins先执行plugins 后执行presets都相当于插件
+
+实现bundle.js
+1. 模块分析：读取入口文件，分析代码
+           content =  fs.readFileSync(filename, ‘utf-8’)
+2. @babel/parser 解析文件成Ast抽象语法树
+            Ast = parser.parse(content, {sourceType: ‘module’})
+3. @babel/traverse .default拿到引入模块
+        traverse(ast, { 
+            ImportDeclaration({ node }) { 
+                const dirname = path.dirname(filename); 
+                const newFile = './' + path.join(dirname, node.source.value);
+                dependencies[node.source.value] = newFile; 
+            } 
+        })
+4.  @babel/core和@babel/preset-env转换语法树
+            babel.transformFromAst(Ast, null, {
+                 presets: ["@babel/preset-env”] 
+            });
+5. 用队列追加的方式，递归找到每个依赖，然后以每个路径的名词作为key值保存其代码和依赖
+6. 最后用闭包的字符串形式返回，用eval（code）
+
+编写loader
+    loader-utils  this.callback :如何返回多个信息，不⽌是处理好的源码呢
+    this.async：如果loader⾥⾯有异步的事情要怎么处理
+
+
+配置react环境
+npm i react react-dom —save
+安装babel与react转换插件
+npm i @babel/preset-react -D 
