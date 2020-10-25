@@ -1,0 +1,17 @@
+serverLess 后台服务部署，测试，数据库保存都可以提供
+只需要编写后台接口 
+wx.cloud.callFunction({
+  // 需调用的云函数名
+  name: 'add',
+  // 传给云函数的参数
+  data: {
+    a: 12,
+    b: 19,
+  },
+  // 成功回调
+  complete: console.log
+})
+
+连接数据库 
+const db = wx.cloud.database()
+db.collection (数据库名称).add
