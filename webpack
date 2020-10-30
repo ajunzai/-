@@ -13,6 +13,7 @@ Webpack
         babel/plugin-transform-runtime 用于开发组件库因为polyfill会全局污染
 
 5. moudle 模块配置
+        noParse： /jquery|bootstrap/ 告知webpack那些模块没有其他依赖，单独打包到一个js文件里面就可以了
         文件和静态资源 file-loader
         url-loader 为file-loader加强版
 
@@ -68,7 +69,12 @@ Webpack
         DllPlugin:⽤于打包出⼀个个单独的动态链接库⽂件             
         DllReferencePlugin：⽤于在主要的配置⽂件中引⼊DllPlugin插件打包好的动态链接库⽂件
 
+15. 动态导入（赖加载）
+        @babel/plugin-syntax-dynamic-import
+        在点击或者什么时候动态加入模块
 
+16. 忽略第三方插件的语言包
+        webpack.ignorePlugin()
 .babelrc 配置文件
     presets和plugins先执行plugins 后执行presets都相当于插件
 
