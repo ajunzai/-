@@ -1,3 +1,4 @@
+// -----------------------------------------------------------------------------------------
 function myCreate() {
     // 创建一个新对象
     const obj = {}
@@ -10,7 +11,9 @@ function myCreate() {
     //4.如果构造函数返回的值是对象则返回，不是对象则返回创建的对象obj
     return typeof ret === 'object' ? ret : obj
 }
+// -----------------------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------------------
 function mycall(context) {
     context = context || window
     // 拿到参数
@@ -23,7 +26,9 @@ function mycall(context) {
     delete context.fn
     return result
 }
+// -----------------------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------------------
 function myApply(context) {
     context = context || window
     context.fn = this
@@ -36,7 +41,9 @@ function myApply(context) {
     delete context.fn
     return result
 }
+// -----------------------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------------------
 function myBind(context) {
     // 获取第一个context的其他参数
     let bindArgs = [...arguments].slice(1)
@@ -46,3 +53,181 @@ function myBind(context) {
         return self.apply(this instanceof Fn ? this : context, bindArgs.concat(fnArgs))
     }
 }
+// -----------------------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------------------
+const STATUS_PENDING = 'pending'
+const STATUS_FULFILLED = 'fulfilled'
+const STATUS_REJECTED = 'rejected'
+
+class myPromise {
+    constructor(exector) {
+        this.status = STATUS_PENDING
+        this.value = ''
+        this.resean = ''
+
+        // 成功存放的数组
+        this.onResolvedCallbacks = []
+        // 失败存放的数组
+        this.onRejectedCallbacks = []
+
+        let resolve = value => {
+            if (this.status === STATUS_PENDING) {
+                this.status = STATUS_FULFILLED
+                this.value = value
+                this.onResolvedCallbacks.forEach(fn => fn())
+            }
+        }
+
+        let reject = resean => {
+            if (this.status === STATUS_PENDING) {
+                this.status = STATUS_REJECTED
+                this.resean = resean
+                this.onRejectedCallbacks.forEach(fn => fn())
+            }
+        }
+        try{
+            exector(resolve, reject)
+        }catch(err){
+            reject(err)
+        }
+    }
+
+    then(onFulfilled = () => {}, onRejected = () => {}) {
+        // !!重复回调
+        // onFulfilled如果不是函数，就忽略onFulfilled，直接返回value
+        // onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
+        // // onRejected如果不是函数，就忽略onRejected，扔出错误
+        // onRejected = typeof onRejected === 'function' ? onRejected : err => {
+        //     throw err
+        // };
+
+        if (this.status === STATUS_FULFILLED) {
+            onFulfilled(this.value)
+            // 异步解决：
+            // onRejected返回一个普通的值，失败时如果直接等于 value => value，
+            // 则会跑到下一个then中的onFulfilled中，
+            // setTimeout(() => {
+            //     try {
+            //         let x = onFulfilled(this.value);
+            //         resolvePromise(promise2, x, resolve, reject);
+            //     } catch (e) {
+            //         reject(e);
+            //     }
+            // }, 0);
+
+        }
+        if (this.status === STATUS_REJECTED) {
+            onFulfilled(this.resean)
+        }
+        if (this.status === STATUS_PENDING) {
+            this.onResolvedCallbacks.push(() => onFulfilled(this.value))
+            this.onRejectedCallbacks.push(() => onRejected(this.resean))
+        }
+    }
+
+    resolve(value) {
+        return new myPromise((resolve,reject) => resolve(value))
+    }
+
+    reject(reason) {
+        return new myPromise((resolve, reject) => reject(reason))
+    }
+}
+
+/**
+ * 用来做then持续回调
+ * @param promise2 新new的promise
+ * @param x 第一个then的返回值
+ * @param resolve 构造函数的结果回调函数
+ * @param reject
+ * @returns {*}
+ */
+function resolvePromise(promise2, x, resolve, reject) {
+    if (x === promise2) {
+        return reject(new TypeError('循环引用'))
+    }
+    // 防止重复调用
+    let called
+    if (x !== null && (typeof x === 'object'|| typeof x ==='function')) {
+        try {
+            // A+规定，声明then = x的then方法
+            let then = x.then
+            if (typeof then === 'function') {
+                // 就让then执行 第一个参数是this   后面是成功的回调 和 失败的回调
+                then.call(x, y => {
+                    // 成功和失败只能调用一个
+                    if (called) return
+                    called = true
+                    // resolve的结果依旧是promise 那就继续解析
+                    resolvePromise(promise2, y, resolve,reject)
+                }, err => {
+                    // 成功和失败只能调用一个
+                    if (called) return
+                    called = true
+                    reject(err)
+                })
+            } else {
+                resolve(x) // 直接成功即可
+            }
+        } catch (e) {
+            if (called) return
+            called = true
+            reject(e)
+        }
+    } else {
+        resolve(x)
+    }
+}
+
+myPromise.race = function(promises) {
+    return new myPromise((resolve,reject)=>{
+        let len = promises.length
+        if (len === 0) return
+        for (let i = 0;i<len; i++) {
+            Promise.resolve(promises[i]).then(data => {
+                resolve(data)
+                return
+            }, err => {
+                reject(err)
+                return
+            })
+        }
+    })
+}
+
+myPromise.all = function (promises) {
+    return new myPromise((resolve, reject) => {
+        let index = 0
+        let result = []
+        if (promises.length === 0) {
+            resolve(result)
+        } else {
+            function processValue(i, data) {
+                result[i] = data
+                if (++index === promises.length) {
+                    resolve(result)
+                }
+            }
+            for (let i =0; i< promises.length; i++) {
+                Promise.resolve(promises[i]).then((data) => {
+                    processValue(i, data)
+                }, err => {
+                    reject(err)
+                    return
+                })
+            }
+        }
+    })
+}
+
+new myPromise((resolve,reject) => {
+    setTimeout(() => {
+        resolve(1)
+    }, 1000)
+}).then(res => {
+    console.log(res)
+},err=> {
+    console.log(err)
+})
+// -----------------------------------------------------------------------------------------
