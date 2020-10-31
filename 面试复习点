@@ -95,4 +95,15 @@
 		b)对象的hasOwnProperty()来检查对象自身中是否含有这个属性
 		c)使用in检查对象中是否含有某个属性。
 
+13. 首屏加载优化
+	解答： 1. 在 HTML 内实现 Loading 态或者骨架屏；
+		2.去掉外联 css；
+		3.缓存基础框架；
+		4.使用动态 polyfill； <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,Set"></script>
+		5.使用 SplitChunksPlugin 拆分公共代码；
+		6.正确地使用 Webpack 4.0 的 Tree Shaking；
+		7.使用动态 import，切分页面代码，减小首屏 JS 体积；
+		8.编译到 ES2015+，提高代码运行效率，减小体积；
+		9.使用 lazyload 和 placeholder 提升加载体验。
+		
 http://47.98.159.95/my_blog/nav/ 神三元的博客
