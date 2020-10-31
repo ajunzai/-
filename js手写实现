@@ -1,0 +1,48 @@
+function myCreate() {
+    // 创建一个新对象
+    const obj = {}
+    // 第一个参数是构造函数
+    const Constructor = [].shift.call(arguments)
+    // 修改原型
+    obj.__proto__ = Constructor.prototype
+    //3.执行构造函数，并将this指向创建的空对象obj
+    const ret = Constructor.apply(obj, arguments)
+    //4.如果构造函数返回的值是对象则返回，不是对象则返回创建的对象obj
+    return typeof ret === 'object' ? ret : obj
+}
+
+function mycall(context) {
+    context = context || window
+    // 拿到参数
+    let args = [...arguments].slice(1)
+    // 将调用函数设置为对象的属性
+    context.fn = this
+    // 执行函数
+    let result = context.fn(args)
+    // 删除属性
+    delete context.fn
+    return result
+}
+
+function myApply(context) {
+    context = context || window
+    context.fn = this
+    let result
+    if (arguments[1]) {
+        result = context.fn([...arguments[1]]) // 调用赋值的函数
+    } else {
+        result = context.fn()
+    }
+    delete context.fn
+    return result
+}
+
+function myBind(context) {
+    // 获取第一个context的其他参数
+    let bindArgs = [...arguments].slice(1)
+    let self = this
+    return function Fn() {
+        let fnArgs = [].slice.call(arguments)
+        return self.apply(this instanceof Fn ? this : context, bindArgs.concat(fnArgs))
+    }
+}
