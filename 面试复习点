@@ -115,5 +115,15 @@
 	      6.WebSocket
 	      7.CORS 再请求头加上Access-Control-Allow-Origin
 	      8.Nginx反向代理
-		
+
+15.git中rebase和merge的区别？
+	解答：
+	1.merge的特点：⾃动创建⼀个新的commit 如果合并的时候遇到冲突，仅需要修改后重新commit 
+		优点：记录了真实的commit情况，包括每个分⽀的详情 
+		缺点：因为每次merge会⾃动产⽣⼀个merge commit，所以在使⽤⼀些git 的GUI tools，特别是commit⽐较频繁 时，（看到分⽀很杂乱）。
+	2.rebase 特点：会合并之前的commit历史 
+		优点：得到更简洁的项⽬历史，去掉了merge commit 
+		缺点：如果合并出现代码问题不容易定位，因为re-write了history
+	因此,当需要保留详细的合并信息的时候建议使⽤git merge，特别是需要将分⽀合并进⼊master分⽀时；
+	当发现⾃⼰修改某个功能时，频繁进⾏了git commit提交时，发现其实过多的提交信息没有必要时，可以尝试git rebase.
 http://47.98.159.95/my_blog/nav/ 神三元的博客
