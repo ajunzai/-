@@ -91,7 +91,7 @@
 		a)每定义一个函数的时候，会天生自带一个prototype属性，这个属性指向函数的原型对象。
 		b)当函数经过new调用时，这个函数就成为构造函数，返回一个全新的实列对象，这个实列对象有一个__proto__属性，指向构造函数的原型对象。		
 	2.描述原型链
-		a)javascript对象通过prototype指向父类对象，直到指向Object对象为止，这样就形成了一个原型指向的链条，即原型链
+		a)每个对象都有__proto__属性，此属性指向该对象的构造函数的原型。对象可以通过__proto__与上游的构造函数的原型对象连接起来，而上游的原型对象也有一个__proto__，这样形成原型链
 		b)对象的hasOwnProperty()来检查对象自身中是否含有这个属性
 		c)使用in检查对象中是否含有某个属性。
 
@@ -105,5 +105,15 @@
 		7.使用动态 import，切分页面代码，减小首屏 JS 体积；
 		8.编译到 ES2015+，提高代码运行效率，减小体积；
 		9.使用 lazyload 和 placeholder 提升加载体验。
+		
+14.跨域的解决方法
+	解答：1.JSONP(利用 script 标签的异步加载实现的)
+	      2.document.domain 基础域名相同 子域名不同
+	      3.window.name 利用在一个浏览器窗口内，载入所有的域名都是共享一个window.name
+	      4.Hash（window.location.hash + iframe） 不同域之间利⽤ iframe的location.hash传值，相同域之间直接js访问来通信
+	      5.window.postMessage (H5中新增的)
+	      6.WebSocket
+	      7.CORS 再请求头加上Access-Control-Allow-Origin
+	      8.Nginx反向代理
 		
 http://47.98.159.95/my_blog/nav/ 神三元的博客
