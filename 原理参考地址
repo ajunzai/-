@@ -1,1 +1,24 @@
 computed原理 https://blog.csdn.net/sinat_17775997/article/details/82682972
+  存在watchers[key] = new Watch（） 里面的value里面 再dirty为true的时候重新更新this.value = this.get() 否则为this.value
+
+为什么不用Index作为key https://juejin.im/post/6844904133430870024
+  通过虚拟dom比较每一个key的文本内容和节点删除，所以刷新整个节点
+  
+怎么设置rem
+  document.documentElement.style.fontSize = document.documentElement.clientWidth / 750 + 'px';
+  
+从零开始实现一个vue-router插件（注意什么）https://segmentfault.com/a/1190000020213325?utm_source=tag-newest
+  怎么在里面用this.router
+  在install这个静态方法里面加beforeCreate混入到实例中，会把相同的名称放在数组中优先执行混入的。
+  那么就可以在根组件上挂着route，子组件上挂着parent.route。因为组件实例化是从外到内的 this.$router用Object.defineProperty
+  
+怎么让自己编写的npm包支持node和浏览器环境?
+  webpack打包
+  output: libraryTarget: umd
+  模块 commonJS和module I/O读写区别
+  
+识别图片和视频的格式？
+  二进制格式 通过 new FileReader()
+  
+ vuex对ts的支持太弱？一个让 vuex 更好的支持 typescript 的解决方案
+ https://blog.csdn.net/weixin_34160277/article/details/93182408
