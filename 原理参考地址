@@ -22,3 +22,10 @@ computed原理 https://blog.csdn.net/sinat_17775997/article/details/82682972
   
  vuex对ts的支持太弱？一个让 vuex 更好的支持 typescript 的解决方案
  https://blog.csdn.net/weixin_34160277/article/details/93182408
+
+js中函数声明先提升还是变量先提升
+  函数提升优先级比变量提升要高，且不会被变量声明覆盖，但是会被变量赋值覆盖。
+
+垃圾回收 https://segmentfault.com/a/1190000018605776   https://blog.csdn.net/qq_17550381/article/details/81126809
+  标记清楚算法。是否存在引用链     引用计数
+  
