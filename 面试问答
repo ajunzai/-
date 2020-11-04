@@ -60,3 +60,23 @@ js是否会阻塞dom数构建？ https://juejin.im/post/6844903855411429390
                     定时触发器线程  settimeout并不是又js引擎执行的（eventloop）
                     事件触发线程  辅助js引擎，用于控制事件轮询，鼠标点击，AJAX异步请求等，对应任务会被添加到事件触发线程中，符合触发条件事件会被该线程添加到任务队列的末尾，等待js引擎出力
                     异步http线程  用于处理XMLHttpRequest将回调函数放到js引擎线程的任务队列中，等待js引擎执行
+
+vue和react的diff算法比较 https://blog.csdn.net/qq_35629054/article/details/107659237
+  相同点：
+      Vue和react的diff算法，都是不进行跨层级比较，只做同级比较。
+  不同点：
+    Vue进行diff时，调用patch打补丁函数，一边比较一边给真实的DOM打补丁
+    Vue对比节点，当节点元素类型相同，但是className不同时，认为是不同类型的元素，删除重新创建，而react则认为是同类型节点，进行修改操作
+    ① Vue的列表比对，采用从两端到中间的方式，旧集合和新集合两端各存在两个指针，两两进行比较，如果匹配上了就按照新集合去调整旧集合，每次对比结束后，指针向队列中间移动；
+    ②而react则是从左往右依次对比，利用元素的index和标识lastIndex进行比较，如果满足index < lastIndex就移动元素，删除和添加则各自按照规则调整；
+    ③当一个集合把最后一个节点移动到最前面，react会把前面的节点依次向后移动，而Vue只会把最后一个节点放在最前面，这样的操作来看，Vue的diff性能是高于react的
+    
+ HTTPS和HTTP的主要区别  https://blog.csdn.net/qq_35642036/article/details/82788421
+        1、https协议需要到CA申请证书，一般免费证书较少，因而需要一定费用。
+        2、http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl/tls加密传输协议。
+        3、http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。
+        4、http的连接很简单，是无状态的；HTTPS协议是由SSL/TLS+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。
+   
+ chrome（谷歌）的url长度限制超过8182个字符返回本文开头时列出的错误 2k到64k字节。
+ 
+ react fiber 架构优越性 https://zhuanlan.zhihu.com/p/37095662
