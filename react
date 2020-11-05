@@ -7,6 +7,10 @@ fiber
         新的vdom {type: , child, return, props, slibing}
     2.16.6ms 一帧 任何占用主进程超过这个时间，都可能会卡顿，这种任务，我们基本都可以用fiber这个理念来解决 上传图片md5  有webworker和时间切片
 
+父组件发生变化的时候，子组件不需要渲染？ 
+    可以用shouldComponentUpdata，return true更新false不更新。则需要判断新老值的变化是否相等。
+    React.PureComponent 中的 shouldComponentUpdate() 仅作对象的浅层⽐较
+
 ref概念
 1.ref在模板中用内联函数作为属性值传递的时候，在render渲染时会触发二次更新
 2.class中创建ref的方式，React.createRef(),通过current拿到当前组件实例
