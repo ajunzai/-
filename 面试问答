@@ -79,4 +79,8 @@ vue和react的diff算法比较 https://blog.csdn.net/qq_35629054/article/details
    
  chrome（谷歌）的url长度限制超过8182个字符返回本文开头时列出的错误 2k到64k字节。
  
+ proxy的理解 https://juejin.im/post/6844904090116292616
+
+ css3开启硬件加速  translateZ(0)
+ 
  react fiber 架构优越性 https://zhuanlan.zhihu.com/p/37095662
