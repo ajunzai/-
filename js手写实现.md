@@ -1,4 +1,5 @@
-// -----------------------------------------------------------------------------------------
+### debounce防抖
+```javascript
 const debounce = (fn, delay) => { 
     let timer = null; 
     return (...args) => { 
@@ -8,9 +9,11 @@ const debounce = (fn, delay) => {
         }, delay); 
      }; 
 };
-// -----------------------------------------------------------------------------------------
+```
+* * *
 
-// -----------------------------------------------------------------------------------------
+### throttle节流
+```javascript
 const throttle = (fn, delay = 500) => { 
     let flag = true; 
     return (...args) => { 
@@ -22,7 +25,11 @@ const throttle = (fn, delay = 500) => {
         }, delay); 
     }; 
  };
-// -----------------------------------------------------------------------------------------
+```
+* * *
+
+### object.create 、call 、Apply 、bind 
+```javascript
 function myCreate() {
     // 创建一个新对象
     const obj = {}
@@ -35,9 +42,8 @@ function myCreate() {
     //4.如果构造函数返回的值是对象则返回，不是对象则返回创建的对象obj
     return typeof ret === 'object' ? ret : obj
 }
-// -----------------------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------------------
+```
+```javascript
 function mycall(context) {
     context = context || window
     // 拿到参数
@@ -50,9 +56,8 @@ function mycall(context) {
     delete context.fn
     return result
 }
-// -----------------------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------------------
+```
+```javascript
 function myApply(context) {
     context = context || window
     context.fn = this
@@ -65,9 +70,8 @@ function myApply(context) {
     delete context.fn
     return result
 }
-// -----------------------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------------------
+```
+```javascript
 function myBind(context) {
     // 获取第一个context的其他参数
     let bindArgs = [...arguments].slice(1)
@@ -77,9 +81,11 @@ function myBind(context) {
         return self.apply(this instanceof Fn ? this : context, bindArgs.concat(fnArgs))
     }
 }
-// -----------------------------------------------------------------------------------------
+```
+* * *
 
-// -----------------------------------------------------------------------------------------
+### promise手写进阶版 **race** **all**
+```javascript
 const STATUS_PENDING = 'pending'
 const STATUS_FULFILLED = 'fulfilled'
 const STATUS_REJECTED = 'rejected'
@@ -254,12 +260,11 @@ new myPromise((resolve,reject) => {
 },err=> {
     console.log(err)
 })
-// -----------------------------------------------------------------------------------------
+```
+* * *
 
-
-/**
- * lru缓存，keep-alive
- */
+### lru缓存，keep-alive
+``` javascript
 class LRUCache {
   constructor(capacity) {
     this.capacity = capacity
@@ -290,3 +295,125 @@ class LRUCache {
     return -1
   }
 }
+```
+* * *
+
+### proxy深拷贝
+```javascript
+const MY_IMMER = Symbol('my-immer')
+
+// 检查 value 是否是普通对象。 也就是说该对象由 Object 构造函数创建，或者 [[Prototype]] 为 null 。
+const isPlainObject = value => {
+  if (
+    !value ||
+    typeof value !== 'object' ||
+    Object.prototype.toString.call(value) !== '[object Object]'
+  ) {
+    return false
+  }
+
+  const proto = Object.getPrototypeOf(value)
+  if (proto === null) {
+    return true
+  }
+  const Ctor = proto.hasOwnProperty('constructor') && proto.constructor
+  return (
+    typeof Ctor === 'function' &&
+    Ctor instanceof Ctor &&
+    Function.prototype.toString.call(Ctor) ===
+      Function.prototype.toString.call(Object)
+  )
+}
+
+// 判断是否为proxy对象
+const isProxy = value => !!value && !!value[MY_IMMER]
+
+const produce = (baseState, fn) => {
+
+  // 存放生成的proxy对象
+  const proxies = new Map()
+  // 存放set过的值 其对象，里面储存最新变化数据
+  const copies = new Map()
+
+  const getProxy = data => {
+    if (isProxy(data)) {
+      return data
+    }
+    if (isPlainObject(data) || Array.isArray(data)) {
+      if (proxies.has(data)) {
+        return proxies.get(data)
+      }
+      const proxy = new Proxy(data, handler)
+      proxies.set(data, proxy)
+      return proxy
+    }
+    return data
+  }
+
+  const handler = {
+    get(target, key) {
+      if (key === MY_IMMER) return target
+      const data = copies.get(target) || target
+      return getProxy(data[key])
+    },
+    set(target, key, val) {
+      const copy = getCopy(target)
+      const newValue = getProxy(val)
+      // 这里的判断用于拿到 proxy 的target
+      // 否则直接 copy[key] = newValue 的话外部拿到的对象是个 proxy
+      copy[key] = isProxy(newValue) ? newValue[MY_IMMER] : newValue
+      return true
+    }
+  }
+
+  const getCopy = data => {
+    if (copies.has(data)) {
+      return copies.get(data)
+    }
+    const copy = Array.isArray(data) ? data.slice() : {...data}
+    copies.set(data, copy)
+    return copy
+  }
+
+  const isChange = data => {
+    if (proxies.has(data) || copies.has(data)) return true
+  }
+
+  const finalize = data => {
+    if (isPlainObject(data) || Array.isArray(data)) {
+      if (!isChange(data)) {
+        return data
+      }
+      const copy = getCopy(data)
+      Object.keys(copy).forEach(key => {
+        copy[key] = finalize(copy[key])
+      })
+      return copy
+    }
+    return data
+  }
+
+  const proxy = getProxy(baseState)
+  fn(proxy)
+  return finalize(baseState)
+}
+
+const state = {
+  info: {
+    name: 'yck',
+    career: {
+      first: {
+        name: '111'
+      }
+    }
+  },
+  data: [1]
+}
+
+const data = produce(state, draftState => {
+  draftState.info.age = 26
+  draftState.info.career.first.name = '222'
+})
+console.log(data, state)
+console.log(data.data === state.data)
+```
