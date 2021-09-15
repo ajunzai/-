@@ -1,4 +1,3 @@
-
 fiber
     两大件 1.vdom数=》链表
                 2.利用浏览器渲染的间隔时间 requestIdleCallback
