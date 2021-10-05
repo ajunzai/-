@@ -2,8 +2,11 @@
 ```javascript
 const debounce = (fn, delay) => { 
     let timer = null; 
-    return (...args) => { 
-        clearTimeout(timer); 
+    return (...args) => {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null
+        }
         timer = setTimeout(() => { 
             fn.apply(this, args); 
         }, delay); 
