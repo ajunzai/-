@@ -420,3 +420,16 @@ const data = produce(state, draftState => {
 console.log(data, state)
 console.log(data.data === state.data)
 ```
+
+### map.foreach.filter 循环的实现
+```javascript
+   Array.prototype.myMap((fn) => {
+      var len = this.length
+      var arr = []
+      for (let i = 0; i < len; i++) {
+        arr.push(fn(this[i], i))
+      }
+      return arr
+   })
+```
+***
