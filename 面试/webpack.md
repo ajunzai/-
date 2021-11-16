@@ -72,3 +72,23 @@ module.exports = function(source) {
 5. 通过长连接，socket server 可以直接将这两个文件主动发送给客户端（浏览器）
 6. 浏览器拿到两个新的文件后，通过HMR runtime机制，加载这两个文件，并且针对修改的模块进行更新
 
+
+### webpack 优化
+- 构建速度优化
+  优化 loader 配置 ： 通过include 和exclude指定优化
+  合理使用 resolve.extensions： 解析文件自动添加拓展名
+  优化 resolve.modules： 解析第三方包
+  优化 resolve.alias ： 添加查询路径别名
+  使用 DLLPlugin 插件： 引入动态链，打包一个经常使用库再引入
+  使用 cache-loader： 缓存磁盘
+  terser 启动多线程
+  合理使用 sourceMap
+- webpack优化前端的手段有：
+  JS代码压缩
+  CSS代码压缩
+  Html文件代码压缩
+  文件大小压缩
+  图片压缩
+  Tree Shaking
+  代码分离
+  内联 chunk
