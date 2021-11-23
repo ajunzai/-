@@ -74,21 +74,28 @@ module.exports = function(source) {
 
 
 ### webpack 优化
-- 构建速度优化
-  ```优化 loader 配置 ： 通过include 和exclude指定优化
-  合理使用 resolve.extensions： 解析文件自动添加拓展名
-  优化 resolve.modules： 解析第三方包
-  优化 resolve.alias ： 添加查询路径别名
-  使用 DLLPlugin 插件： 引入动态链，打包一个经常使用库再引入
-  使用 cache-loader： 缓存磁盘
-  terser 启动多线程
-  合理使用 sourceMap```
-- webpack优化前端的手段有：
-  ```JS代码压缩
-  CSS代码压缩
-  Html文件代码压缩
-  文件大小压缩
-  图片压缩
-  Tree Shaking
-  代码分离
-  内联 chunk```
+1. Webpack-bundle-anlyzer 分析打包体积
+2. speed-measure-webpack-plugin 测量各个阶段花费的时间
+```javascript
+// 分析打包时间
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+const smp = new SpeedMeasurePlugin()
+// ...
+module.exports = {
+  configureWebpack: smp.wrap({
+    plugins: [new BundleAnalyzerPlugin()],
+  }),
+}
+```
+3. 合理使用resolve-extensions。 自动增加后缀查询文件是否存在
+4. 配置别名alias
+5. 生产环境关闭source-map
+6. 代码压缩。terser-webpack-plugin
+7. css压缩 optimize-css-assets-webpack-plugin
+8. 提取公共代码 splitChunks，通过cacheGroups分配不同的组
+9. DLLplugin 配置可选链生成manifest.json文件（映射关系)，
+10. externals 配置CDN资源路径 （VUE，axios）
+11. HappyPack 多个子进程并发执行
+12. gzip压缩
+13. Tree Shaking
+14. 利用缓存 webpack-cache
