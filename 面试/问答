@@ -87,3 +87,21 @@ vue和react的diff算法比较 https://blog.csdn.net/qq_35629054/article/details
  
  mapState的原理 https://juejin.im/post/6844903599764406286
   内部有一个normalizeMap函数，把字符串方法或者是函数转换为key和value的一个数组对象，把最新的数组对象便利，typeof val === 'function' ? val.call(this) : this.$store.state[value] ,返回一个新的对象值
+
+vue和react的diff算法比较 https://blog.csdn.net/qq_35629054/article/details/107659237bi
+vue和react的diff算法比较 https://blog.csdn.net/qq_35629054/article/details/107659237
+
+fetch和axios的区别
+  接收错误的状态码，不会被标记为reject，即使状态码是400-500。仅当网络故障或请求被阻止，才会标记为reject。 fetch不会发送跨域的cookies，除非你使用credentials： same-origin
+  
+await-to-js
+  封装了错误和数据在一个数组里面【error, data】
+  
+轮询接口有延迟 请求发送一秒的接口一直不返回，到3秒才返回这样是无效的
+  那么用请求接口的回调，在回调中通过判断状态，重新发起请求。
+  
+keep-alive原理
+  https://juejin.cn/post/7033942807450484743
+  
+  
+  
